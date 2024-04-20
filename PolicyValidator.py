@@ -23,7 +23,6 @@ class PolicyValidator:
             if not actual_keys.issubset(top_level_keys):
                 extra_keys = actual_keys - top_level_keys
                 raise ValidationError(f"Invalid keys found at the top level: {extra_keys}")
-            
             policy_name = self.policy.get('PolicyName')
             if not isinstance(policy_name, str):
                 raise ValidationError("There must be PolicyName that must be a string.")
@@ -33,6 +32,8 @@ class PolicyValidator:
                 raise ValidationError("PolicyName contains invalid characters.")
 
             document = self.policy.get('PolicyDocument')
+            if not isinstance(document, dict):
+                raise ValidationError("There must be PolicyDocument that must be a dictionary (JSON object).")
             top_level_keys_doc = {'Version', 'Statement'}
             actual_keys_doc = set(document.keys())
             if not actual_keys_doc.issubset(top_level_keys_doc):
@@ -42,8 +43,6 @@ class PolicyValidator:
                 raise ValidationError("Missing 'Version' key in PolicyDocument.")
             if 'Statement' not in document:
                 raise ValidationError("Missing 'Statement' key in PolicyDocument.")
-            if not isinstance(document, dict):
-                raise ValidationError("There must be PolicyDocument that must be a dictionary (JSON object).")
             
 
             statements = document.get('Statement')
@@ -76,9 +75,9 @@ class PolicyValidator:
                 
             return True
         except ValidationError as e:
-            print(f"Validation Error: {e}")
+            raise ValidationError(f"Validation Error: {e}")
         except Exception as e:
-            print(f"An unexpected error occurred: {e}")
+            raise Exception(f"An unexpected error occurred: {e}")
 
     def __init__(self, file_path):
         self.file_path = file_path
