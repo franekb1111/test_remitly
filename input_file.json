@@ -1,0 +1,24 @@
+{
+    "PolicyName": "root",
+    "PolicyDocument": {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "IamListAccess",
+                "Effect": "Allow",
+                "Action": "iam:ListUsers",
+                "Resource": "arn:aws:s3:::example_bucket"
+            },
+            {
+                "Sid": "ddd",
+                "Effect": "Deny",
+                "Action": [
+                    "iam:ListRoles",
+                    "iam:ListUsers"
+                ],
+                "Resource": "*"
+            }
+        ]
+    }
+
+}
